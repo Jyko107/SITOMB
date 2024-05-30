@@ -3,9 +3,7 @@ import sqlite3
 from datetime import date
 import pandas as pd
 
-
-
-
+st.set_page_config(page_title="Sistem Informasi Soto Mie Bogor", page_icon=":🍲:", layout="wide")
 
 st.title('Jurnal Umum')
 st.sidebar.success("Pilih Menu Diatas ini.")
@@ -77,6 +75,7 @@ def edit_data():
                           (new_Tanggal, new_Keterangan1, new_Debit, new_Keterangan2, new_Kredit, row_to_edit))
                 conn.commit()
                 st.success("Row updated successfully")
+
 form()
 display_data()
 calculate_saldo()
