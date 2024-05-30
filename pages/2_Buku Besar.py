@@ -17,8 +17,8 @@ with st.form('transaction_form'):
     description = st.text_input('Deskripsi')
 
     account = st.selectbox('Pilih Akun', [f'Account {i}' for i in range(1, 16)])
-    debit = st.number_input('Debit (Dalam Ribu Rupiah)', min_value=0.0, format="%.2f")
-    credit = st.number_input('Kredit (Dalam Ribu Rupiah)', min_value=0.0, format="%.2f")
+    debit = st.text_input('Debit (Dalam Ribu Rupiah)', min_value=0.0, format="%.2f")
+    credit = st.text_input('Kredit (Dalam Ribu Rupiah)', min_value=0.0, format="%.2f")
     submitted = st.form_submit_button('Tambahkan')
 
     if submitted:
