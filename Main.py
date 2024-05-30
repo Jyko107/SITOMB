@@ -1,6 +1,8 @@
 import streamlit as st
 import requests
 from PIL import Image
+import pickle
+from pathlib import Path
 
 st.set_page_config(page_title="Sistem Informasi Soto Mie Bogor", page_icon=":🍲:", layout="wide")
 
@@ -52,13 +54,11 @@ else:
     #ambil file css
     local_css("style/style.css")
 
-
     #header
     with st.container():
         st.subheader("Selamat datang     di SITOMB:wave:")
         st.title("Sistem Informasi Soto Bogor - SITOMB")
         st.write('''''')
-
 
     #informasi
     with st.container():
@@ -76,8 +76,6 @@ else:
 
         with right_column:
             st_lottie(lottie_coading, height=300, key="coding")
-
-
     #foto
     Image1 = Image.open('images/sotodag.jpeg')
     Image2 = Image.open('images/soyam.jpeg')
@@ -101,4 +99,3 @@ else:
            
     st.write("##")
     st.write("---")
-
