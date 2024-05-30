@@ -24,11 +24,15 @@ def form():
     with st.form(key="information_form"):
         Tanggal = st.date_input("Tanggal:", value=date.today())
         Keterangan1 = st.text_input("Keterangan 1:")
-        Debit = st.number_input("Debit (Dalam Ribu Rupiah):", min_value=0.0, step=1000.0)
+        Debit = st.text_input("Debit (Dalam Rupiah):")
         Keterangan2 = st.text_input("Keterangan 2:")
-        Kredit = st.number_input("Kredit (Dalam Ribu Rupiah):", min_value=0.0, step=1000.0)
+        Kredit = st.text_input("Kredit (Dalam Rupiah):")
         submission = st.form_submit_button(label="Submit")
     if submission:
+        # Ubah format angka yang dimasukkan ke format yang sesuai
+        Debit = float(Debit.replace(".", "").replace(",", ".")) if Debit else 0.0
+        Kredit = float(Kredit.replace(".", "").replace(",", ".")) if Kredit else 0.0
+        
         c.execute("INSERT INTO information (Tanggal, Keterangan1, Debit, Keterangan2, Kredit) VALUES (?, ?, ?, ?, ?)", (Tanggal, Keterangan1, Debit, Keterangan2, Kredit))
         conn.commit()
         st.success("Successfully submitted")
@@ -67,10 +71,13 @@ def edit_data():
             Tanggal, Keterangan1, Debit, Keterangan2, Kredit = data
             new_Tanggal = st.date_input("Tanggal:", value=pd.to_datetime(Tanggal))
             new_Keterangan1 = st.text_input("Keterangan 1:", value=Keterangan1)
-            new_Debit = st.number_input("Debit (Dalam Ribu Rupiah):", min_value=0.0, step=1000.0, value=Debit)
+            new_Debit = st.text_input("Debit (Dalam Rupiah):", value=format_rupiah(Debit))
             new_Keterangan2 = st.text_input("Keterangan 2:", value=Keterangan2)
-            new_Kredit = st.number_input("Kredit (Dalam Ribu Rupiah):", min_value=0.0, step=1000.0, value=Kredit)
+            new_Kredit = st.text_input("Kredit (Dalam Rupiah):", value=format_rupiah(Kredit))
             if st.button("Update"):
+                new_Debit = float(new_Debit.replace(".", "").replace(",", ".")) if new_Debit else 0.0
+                new_Kredit = float(new_Kredit.replace(".", "").replace(",", ".")) if new_Kredit else 0.0
+                
                 c.execute("UPDATE information SET Tanggal=?, Keterangan1=?, Debit=?, Keterangan2=?, Kredit=? WHERE rowid=?", 
                           (new_Tanggal, new_Keterangan1, new_Debit, new_Keterangan2, new_Kredit, row_to_edit))
                 conn.commit()
