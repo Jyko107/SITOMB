@@ -1,8 +1,6 @@
 import streamlit as st
 import requests
 from PIL import Image
-import pickle
-from pathlib import Path
 
 st.set_page_config(page_title="Sistem Informasi Soto Mie Bogor", page_icon=":🍲:", layout="wide")
 
