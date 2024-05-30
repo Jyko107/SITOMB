@@ -1,6 +1,10 @@
 import streamlit as st
 import requests
 from PIL import Image
+from streamlit_lottie import st_lottie
+import pickle
+from pathlib import Path
+import streamlit_authenticator as stauth
 
 st.set_page_config(page_title="Sistem Informasi Soto Mie Bogor", page_icon=":🍲:", layout="wide")
 
@@ -36,15 +40,13 @@ else:
         st.experimental_rerun()
 
         st.experimental_rerun()
-  
+    
 
-    #header
     with st.container():
         st.subheader("Selamat datang     di SITOMB:wave:")
         st.title("Sistem Informasi Soto Bogor - SITOMB")
         st.write('''''')
 
-    #informasi
     with st.container():
         st.write("---")
         left_column, right_column = st.columns(2)
@@ -58,9 +60,6 @@ else:
                     dengan mi kuning, dan risol umumnya soto disajikan hanya menggunakan mi soun atau bihun.
                         """)
 
-        with right_column:
-            st_lottie(lottie_coading, height=300, key="coding")
-    #foto
     Image1 = Image.open('images/sotodag.jpeg')
     Image2 = Image.open('images/soyam.jpeg')
     with st.container():
@@ -79,7 +78,7 @@ else:
             st.write('##')
             st.write(''' Soto Bogor Ayam yang terbuat dari bahan - bahan
                     Mie Basah, Bihun, Kol, Daging Ayam, Tomat, Bumbu Paon,
-                    Bawang Goreng, Daun Daunan.''')
-           
+                    Bawang Goreng, Daun Daunan.''')   
     st.write("##")
     st.write("---")
+
