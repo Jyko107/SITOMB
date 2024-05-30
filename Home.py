@@ -1,10 +1,6 @@
 import streamlit as st
 import requests
 from PIL import Image
-from streamlit_lottie import st_lottie
-import pickle
-from pathlib import Path
-import streamlit_authenticator as stauth
 
 st.set_page_config(page_title="Sistem Informasi Soto Mie Bogor", page_icon=":🍲:", layout="wide")
 
@@ -55,8 +51,6 @@ else:
 
     #ambil file css
     local_css("style/style.css")
-
-    lottie_coading = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_fcfjwiyb.json")
 
 
     #header
