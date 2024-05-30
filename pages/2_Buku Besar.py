@@ -1,6 +1,10 @@
 import streamlit as st
 import pandas as pd
 
+def format_rupiah(amount):
+    # Format nilai ke format Ribu Rupiah dengan tanda pemisah ribuan (titik) dan desimal (koma)
+    return f"{amount:,.2f}".replace(",", ".")
+
 st.set_page_config(page_title="Sistem Informasi Soto Mie Bogor", page_icon=":🍲:", layout="wide")
 
 # Inisialisasi DataFrame untuk masing-masing akun jika belum ada
@@ -22,12 +26,16 @@ with st.form('transaction_form'):
     submitted = st.form_submit_button('Tambahkan')
 
     if submitted:
+        # Format nilai Debit dan Kredit sebelum menambahkan transaksi ke DataFrame
+        debit_formatted = format_rupiah(float(debit))
+        credit_formatted = format_rupiah(float(credit))
+
         # Tambahkan transaksi ke akun yang dipilih
         new_transaction = pd.DataFrame({
             'Date': [date],
             'Description': [description],
-            'Debit': [debit],
-            'Credit': [credit]
+            'Debit': [debit_formatted],
+            'Credit': [credit_formatted]
         })
         st.session_state.ledgers[account] = pd.concat([st.session_state.ledgers[account], new_transaction], ignore_index=True)
         st.success(f'Transaksi berhasil ditambahkan ke {account}!')
@@ -52,23 +60,3 @@ if st.session_state.get('ledgers'):
             st.write(f'Belum ada transaksi di {account}.')
 else:
     st.warning("Data buku besar tidak ditemukan. Silakan tambahkan transaksi.")
-   
-def format_rupiah(amount):
-    # Format nilai ke format Ribu Rupiah dengan tanda pemisah ribuan (titik) dan desimal (koma)
-    return f"{amount:,.2f}".replace(",", ".")
-
-# ...
-if submitted:
-    # Format nilai Debit dan Kredit sebelum menambahkan transaksi ke DataFrame
-    debit_formatted = format_rupiah(debit)
-    credit_formatted = format_rupiah(credit)
-
-    # Tambahkan transaksi ke akun yang dipilih
-    new_transaction = pd.DataFrame({
-        'Date': [date],
-        'Description': [description],
-        'Debit': [debit_formatted],
-        'Credit': [credit_formatted]
-    })
-    st.session_state.ledgers[account] = pd.concat([st.session_state.ledgers[account], new_transaction], ignore_index=True)
-    st.success(f'Transaksi berhasil ditambahkan ke {account}!')
