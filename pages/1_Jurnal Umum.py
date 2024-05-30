@@ -2,7 +2,7 @@ import streamlit as st
 import sqlite3
 from datetime import date
 import pandas as pd
-from navigation import make_sidebar
+
 
 
 
@@ -77,7 +77,6 @@ def edit_data():
                           (new_Tanggal, new_Keterangan1, new_Debit, new_Keterangan2, new_Kredit, row_to_edit))
                 conn.commit()
                 st.success("Row updated successfully")
-make_sidebar()
 form()
 display_data()
 calculate_saldo()
