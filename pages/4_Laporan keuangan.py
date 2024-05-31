@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 def main():
-    st.title("Aplikasi Laporan Keuangan Manufaktur")
+    st.title("Laporan Keuangan")
 
     # Sidebar untuk input data
     st.header("Input Data")
