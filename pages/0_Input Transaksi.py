@@ -23,7 +23,7 @@ def form():
         Tanggal = st.date_input("Tanggal:")
         Keterangan = st.text_input("Keterangan:")
         qty = st.text_input("Jumlah:")
-        Harga_input = st.text_input("Harga (dalam format xx.xxx.xxx):")
+        Harga_input = st.text_input("Harga (dalam Rupiah):")
         
         submission = st.form_submit_button(label="Submit")
         
@@ -35,7 +35,7 @@ def form():
                 conn.commit()
                 st.success("Successfully submitted")
             except ValueError:
-                st.error("Harga harus berupa angka dalam format xx.xxx.xxx")
+                st.error("Harga")
 
 def display_data():
     c.execute("SELECT * FROM information")
