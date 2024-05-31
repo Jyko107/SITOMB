@@ -1,82 +1,72 @@
 import streamlit as st
-import sqlite3
-from datetime import date
 import pandas as pd
 
-st.title('Laporan Keuangan')
+def main():
+    st.title("Aplikasi Laporan Keuangan Manufaktur")
 
-# Connect to SQLite database
-conn = sqlite3.connect('Laporan Keuangan.db')
-c = conn.cursor()
-
-# Create tables if they don't exist
-c.execute('''CREATE TABLE IF NOT EXISTS transactions
-             (Tanggal TEXT, Keterangan TEXT, Debit REAL, Kredit REAL)''')
-conn.commit()
-
-def form():
-    st.write("Isi Data Transaksi")
-    with st.form(key="transaction_form"):
-        Tanggal = st.date_input("Tanggal:")
-        Keterangan = st.text_input("Keterangan:")
-        Debit = st.number_input("Debit (Dalam Ribu Rupiah):", min_value=0.0, format="%.2f")
-        Kredit = st.number_input("Kredit (Dalam Ribu Rupiah):", min_value=0.0, format="%.2f")
-        submission = st.form_submit_button(label="Submit")
-        
-        if submission:
-            c.execute("INSERT INTO transactions (Tanggal, Keterangan, Debit, Kredit) VALUES (?, ?, ?, ?)", 
-                      (Tanggal, Keterangan, Debit, Kredit))
-            conn.commit()
-            st.success("Transaksi berhasil disubmit")
-
-def display_data():
-    st.write("Data Transaksi")
-    c.execute("SELECT * FROM transactions")
-    data = c.fetchall()
-    df = pd.DataFrame(data, columns=['Tanggal', 'Keterangan', 'Debit', 'Kredit'])
-    st.write(df)
-
-def delete_data():
-    row_to_delete = st.text_input("Masukkan nomor baris yang akan dihapus:")
-    if st.button("Delete"):
-        c.execute("DELETE FROM transactions WHERE rowid=?", (row_to_delete,))
-        conn.commit()
-        st.success("Baris berhasil dihapus")
-
-def laporan_laba_rugi():
+    # Sidebar untuk input data
+    st.header("Input Data")
+    tgl_laporan = st.date_input("Tanggal Laporan:")
+    
+    st.subheader("Laporan Laba Rugi")
+    pendapatan_usaha = st.number_input("Pendapatan Usaha:", value=0)
+    biaya_bahan_baku = st.number_input("Biaya Bahan Baku:", value=0)
+    biaya_tenaga_kerja = st.number_input("Biaya Tenaga Kerja:", value=0)
+    biaya_overhead_pabrik = st.number_input("Biaya Overhead Pabrik:", value=0)
+    biaya_operasional = st.number_input("Biaya Operasional:", value=0)
+    
+    st.subheader("Laporan Perubahan Modal")
+    modal_awal = st.number_input("Modal Awal:", value=0)
+    
+    st.subheader("Laporan Posisi Keuangan")
+    kas = st.number_input("Kas:", value=0)
+    piutang_usaha = st.number_input("Piutang Usaha:", value=0)
+    
+    st.subheader("Total Kewajiban dan Modal")
+    hutang_usaha = st.number_input("Hutang Usaha:", value=0)
+    
+    laba_bersih = pendapatan_usaha - (biaya_bahan_baku + biaya_tenaga_kerja + biaya_overhead_pabrik + biaya_operasional)
+    total_modal = modal_awal + laba_bersih
+    total_aset = kas + piutang_usaha
+    total_kewajiban_modal = total_modal + hutang_usaha
+  # Menampilkan laporan laba rugi
     st.header("Laporan Laba Rugi")
-    c.execute("SELECT Keterangan, SUM(Debit) - SUM(Kredit) as Amount FROM transactions GROUP BY Keterangan")
-    data = c.fetchall()
-    df = pd.DataFrame(data, columns=['Keterangan', 'Amount'])
-    st.write(df)
+    st.write("Pendapatan Usaha:", pendapatan_usaha)
+    st.write("Biaya Bahan Baku:", biaya_bahan_baku)
+    st.write("Biaya Tenaga Kerja:", biaya_tenaga_kerja)
+    st.write("Biaya Overhead Pabrik:", biaya_overhead_pabrik)
+    st.write("Biaya Operasional:", biaya_operasional)
+    st.write("Laba Bersih:", laba_bersih)
 
-def laporan_perubahan_modal():
+    # Menampilkan laporan perubahan modal
     st.header("Laporan Perubahan Modal")
-    initial_capital = st.number_input("Modal Awal (Dalam Ribu Rupiah):", min_value=0.0, format="%.2f")
-    c.execute("SELECT SUM(Debit) - SUM(Kredit) FROM transactions WHERE Keterangan LIKE 'Modal%'")
-    capital_changes = c.fetchone()[0] or 0.0
-    final_capital = initial_capital + capital_changes
-    st.write(f"Modal Awal: {initial_capital} Ribu Rupiah")
-    st.write(f"Perubahan Modal: {capital_changes} Ribu Rupiah")
-    st.write(f"Modal Akhir: {final_capital} Ribu Rupiah")
+    st.write("Modal Awal:", modal_awal)
+    st.write("Laba Bersih Tahun Berjalan:", laba_bersih)
+    st.write("Total Modal:", total_modal)
 
-def laporan_posisi_keuangan():
+    # Menampilkan laporan posisi keuangan
     st.header("Laporan Posisi Keuangan")
-    c.execute("SELECT SUM(Debit) FROM transactions")
-    total_debit = c.fetchone()[0] or 0.0
-    c.execute("SELECT SUM(Kredit) FROM transactions")
-    total_kredit = c.fetchone()[0] or 0.0
-    st.write(f"Total Aset: {total_debit} Ribu Rupiah")
-    st.write(f"Total Kewajiban: {total_kredit} Ribu Rupiah")
-    st.write(f"Ekuitas: {total_debit - total_kredit} Ribu Rupiah")
+    st.write("Kas:", kas)
+    st.write("Piutang Usaha:", piutang_usaha)
+    st.write("Total Aset:", total_aset)
+    st.write("Hutang Usaha:", hutang_usaha)
+    st.write("Total Kewajiban dan Modal:", total_kewajiban_modal)
 
-# Display forms and reports
-form()
-display_data()
-delete_data()
-laporan_laba_rugi()
-laporan_perubahan_modal()
-laporan_posisi_keuangan()
+    # Memungkinkan pengguna mengunduh data ke dalam format CSV
+    data = {
+        'Tanggal Laporan': [tgl_laporan],
+        'Pendapatan Usaha': [pendapatan_usaha],
+        'Biaya Bahan Baku': [biaya_bahan_baku],
+        'Biaya Tenaga Kerja': [biaya_tenaga_kerja],
+        'Biaya Overhead Pabrik': [biaya_overhead_pabrik],
+        'Biaya Operasional': [biaya_operasional],
+        'Modal Awal': [modal_awal],
+        'Laba Bersih': [laba_bersih],
+        'Kas': [kas],
+        'Piutang Usaha': [piutang_usaha],
+        'Hutang Usaha': [hutang_usaha],
+        'Total Kewajiban dan Modal': [total_kewajiban_modal]
+ }
 
-# Close the database connection
-conn.close()
+if __name__== "__main__":
+    main()
